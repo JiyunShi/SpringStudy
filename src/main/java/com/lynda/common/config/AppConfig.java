@@ -14,19 +14,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 
 @Configuration
-@Import(DataConfig.class)
+//@Import(DataConfig.class)
+@ComponentScan(basePackages = {"com.lynda.common"})
 @PropertySource("classpath:/application-${spring.profiles.active}.properties")
 public class AppConfig {
 
     @Value("${greeting.text}")
     private String greetingText;
-
     @Value("${greeting.preamble}")
     private String greetingPreamble;
 
-
     @Value("#{new Boolean(environment['spring.profiles.active']=='dev')}")
     private boolean isDev;
+
+
 
     public class Worker{
         private String preamble;
@@ -35,6 +36,7 @@ public class AppConfig {
         public Worker(String preamble, String text){
             this.preamble=preamble;
             this.text=text;
+            System.out.println("New Inst");
         }
 
         public void execute(){
@@ -44,6 +46,7 @@ public class AppConfig {
 
 
     @Bean
+    //@Scope("prototype")
     public Worker worker(){
         return new Worker(greetingPreamble, greetingText);
     }
@@ -52,7 +55,6 @@ public class AppConfig {
 
     /*
     Bean by different profile env
-
     */
     /*
     @Bean
@@ -68,6 +70,8 @@ public class AppConfig {
     }
     */
 
+
+    /*
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -85,6 +89,7 @@ public class AppConfig {
         return new InventoryServiceImpl(inventoryItemRepository);
     }
 
+*/
 
 
     public static void main (String[] args){
@@ -93,6 +98,9 @@ public class AppConfig {
         System.out.println(orderService==null?"NULL":"A OK");
         Worker worker = context.getBean(Worker.class);
         worker.execute();
+        /*Worker worker1 = context.getBean(Worker.class);
+        worker1.execute();
+        */
     }
 
 
